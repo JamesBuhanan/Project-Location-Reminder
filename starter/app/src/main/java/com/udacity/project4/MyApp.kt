@@ -15,7 +15,7 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
+        val thing = 21
         /**
          * use Koin Library as a service locator
          */
