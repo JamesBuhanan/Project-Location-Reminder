@@ -3,6 +3,7 @@ package com.udacity.project4.locationreminders.savereminder
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.udacity.project4.R
@@ -17,20 +18,24 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     BaseViewModel(app) {
     val reminderTitle = MutableLiveData<String>()
     val reminderDescription = MutableLiveData<String>()
-    val reminderSelectedLocationStr = MutableLiveData<String>()
-
     //    val selectedPOI = MutableLiveData<PointOfInterest>()
     private val _latitude = MutableLiveData<Double>()
     private val _longitude = MutableLiveData<Double>()
+    private val _reminderSelectedLocationStr = MutableLiveData<String>()
 
     val latitude: LiveData<Double>
         get() = _latitude
     val longitude: LiveData<Double>
         get() = _longitude
+    val reminderSelectedLocationStr: LiveData<String>
+        get() = _reminderSelectedLocationStr
 
     fun setLatLng(latLng: LatLng) {
         _latitude.value = latLng.latitude
         _longitude.value = latLng.longitude
+
+        // set a string made from concatenated lat + lng
+        _reminderSelectedLocationStr.value = "${latLng.latitude.toInt()}, ${latLng.longitude.toInt()}"
     }
 
     /**
@@ -39,7 +44,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     fun onClear() {
         reminderTitle.value = null
         reminderDescription.value = null
-        reminderSelectedLocationStr.value = null
+        _reminderSelectedLocationStr.value = null
 //        selectedPOI.value = null
         _latitude.value = null
         _longitude.value = null
