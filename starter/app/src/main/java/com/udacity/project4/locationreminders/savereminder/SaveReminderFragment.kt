@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
+import com.google.android.gms.location.LocationServices
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
@@ -35,6 +36,8 @@ class SaveReminderFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        geofencingClient = LocationServices.getGeofencingClient(requireContext())
+
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_save_reminder, container, false)
 
@@ -68,11 +71,10 @@ class SaveReminderFragment : BaseFragment() {
                 latitude = latitude,
                 longitude = longitude
             )
-            // 1) add a geofencing request
-            addGeofence(reminderDataItem)
 
-            // 2) save the reminder to the local db
-            _viewModel.validateAndSaveReminder(reminderDataItem)
+            if (_viewModel.validateAndSaveReminder(reminderDataItem)) {
+                addGeofence(reminderDataItem)
+            }
         }
     }
 
@@ -95,7 +97,7 @@ class SaveReminderFragment : BaseFragment() {
                 reminderDataItem.longitude!!,
                 GeofencingConstants.GEOFENCE_RADIUS_IN_METERS
             )
-            .setExpirationDuration(GeofencingConstants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+            .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
             .build()
 
@@ -104,28 +106,24 @@ class SaveReminderFragment : BaseFragment() {
             .addGeofence(geofence)
             .build()
 
-        geofencingClient.removeGeofences(geofencePendingIntent)?.run {
-            addOnCompleteListener {
-                geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
-                    addOnSuccessListener {
-                        Toast.makeText(
-                            context, R.string.geofence_added,
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                        Log.e("Add Geofence", geofence.requestId)
-                    }
-                    addOnFailureListener {
-                        Toast.makeText(
-                            context, R.string.geofences_not_added,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
+
+        geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
+            addOnSuccessListener {
+//                Toast.makeText(
+//                    context, R.string.geofence_added,
+//                    Toast.LENGTH_SHORT
+//                ).show()
+                _viewModel.navigationCommand.value = NavigationCommand.Back
+                Log.e("Add Geofence", geofence.requestId)
+            }
+            addOnFailureListener {
+                Toast.makeText(
+                    context, R.string.geofences_not_added,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
