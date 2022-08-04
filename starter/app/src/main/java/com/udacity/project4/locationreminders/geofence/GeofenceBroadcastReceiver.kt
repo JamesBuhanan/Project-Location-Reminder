@@ -7,8 +7,7 @@ import android.util.Log
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.udacity.project4.R
-import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
-import com.udacity.project4.utils.sendNotification
+import com.udacity.project4.locationreminders.geofence.GeofenceTransitionsJobIntentService.Companion.enqueueWork
 
 /**
  * Triggered by the Geofence.  Since we can have many Geofences at once, we pull the request
@@ -22,8 +21,6 @@ import com.udacity.project4.utils.sendNotification
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val reminderDataItem =
-            intent.getSerializableExtra(EXTRA_REMINDER_DATA_ITEM) as ReminderDataItem
 
         if (intent.action == ACTION_GEOFENCE_EVENT) {
             val geofencingEvent = GeofencingEvent.fromIntent(intent)
@@ -36,7 +33,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
             if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
                 Log.v(TAG, context.getString(R.string.geofence_entered))
-                sendNotification(context, reminderDataItem)
+                enqueueWork(context, intent)
             }
         }
     }
