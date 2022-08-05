@@ -9,8 +9,8 @@ import java.util.*
 data class ReminderDataItem(
     var title: String?,
     var description: String?,
-    var location: String?,
     var latitude: Double?,
     var longitude: Double?,
+    var location: String? = "$latitude, $longitude",
     val id: String = UUID.randomUUID().toString()
 ) : Serializable

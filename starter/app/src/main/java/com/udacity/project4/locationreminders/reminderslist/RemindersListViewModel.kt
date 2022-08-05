@@ -34,9 +34,9 @@ class RemindersListViewModel(
                         ReminderDataItem(
                             reminder.title,
                             reminder.description,
-                            reminder.location,
                             reminder.latitude,
                             reminder.longitude,
+                            reminder.location,
                             reminder.id
                         )
                     })

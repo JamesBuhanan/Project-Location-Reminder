@@ -2,6 +2,7 @@ package com.udacity.project4.locationreminders.savereminder
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -31,6 +32,7 @@ class SaveReminderFragment : BaseFragment() {
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSaveReminderBinding
     private lateinit var geofencingClient: GeofencingClient
+    private val applicationContext: Context by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -106,19 +108,18 @@ class SaveReminderFragment : BaseFragment() {
             .addGeofence(geofence)
             .build()
 
-
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
             addOnSuccessListener {
-//                Toast.makeText(
-//                    context, R.string.geofence_added,
-//                    Toast.LENGTH_SHORT
-//                ).show()
+                Toast.makeText(
+                    applicationContext, R.string.geofence_added,
+                    Toast.LENGTH_SHORT
+                ).show()
                 _viewModel.navigationCommand.value = NavigationCommand.Back
                 Log.e("Add Geofence", geofence.requestId)
             }
             addOnFailureListener {
                 Toast.makeText(
-                    context, R.string.geofences_not_added,
+                    applicationContext, R.string.geofences_not_added,
                     Toast.LENGTH_SHORT
                 ).show()
             }
