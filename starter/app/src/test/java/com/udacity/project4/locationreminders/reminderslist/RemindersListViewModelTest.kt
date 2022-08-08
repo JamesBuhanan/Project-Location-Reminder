@@ -9,12 +9,14 @@ import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.core.IsNot
-import org.junit.Assert
+import org.junit.After
+import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.core.context.stopKoin
 
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
@@ -25,9 +27,14 @@ class RemindersListViewModelTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
-    //TODO: provide testing to the RemindersListViewModel and its live data objects
-    private val list = listOf(
-        ReminderDTO("title", "description", "location", 0.0, 0.0),
+    private val list = mutableListOf(
+        ReminderDTO(
+            "title",
+            "description",
+            "location",
+            0.0,
+            0.0
+        ),
         ReminderDTO(
             "title",
             "description",
@@ -72,12 +79,44 @@ class RemindersListViewModelTest {
         reminderListViewModel.loadReminders()
 
         // THEN
-        Assert.assertThat(
+        assertThat(
             reminderListViewModel.remindersList.getOrAwaitValue(), (IsNot.not(emptyList()))
         )
-        Assert.assertThat(
+        assertThat(
             reminderListViewModel.remindersList.getOrAwaitValue().size,
-            CoreMatchers.`is`(3)
+            equalTo(3)
         )
+    }
+
+    @Test
+    fun check_loading() = runBlockingTest {
+        //WHEN
+        mainCoroutineRule.pauseDispatcher()
+        reminderListViewModel.loadReminders()
+        //THEN
+        assertThat(
+            reminderListViewModel.showLoading.getOrAwaitValue(),
+            equalTo(true)
+        )
+    }
+
+    @Test
+    fun shouldReturnError() {
+        //GIVEN
+        fakeDataSource.shouldSucceed = false
+
+        //WHEN
+        reminderListViewModel.loadReminders()
+
+        //THEN
+        assertThat(
+            reminderListViewModel.showSnackBar.getOrAwaitValue(),
+            equalTo("It failed!")
+        )
+    }
+
+    @After
+    fun tearDown() {
+        stopKoin()
     }
 }
