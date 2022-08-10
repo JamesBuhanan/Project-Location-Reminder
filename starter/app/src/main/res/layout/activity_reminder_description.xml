@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="@dimen/margin_normal"
-            android:text="Location: @{reminderDataItem.location}"
+            android:text="@{reminderDataItem.location}"
             android:textColor="@android:color/holo_red_light"
             android:textSize="@dimen/text_size_large"
             tools:text="something" />
