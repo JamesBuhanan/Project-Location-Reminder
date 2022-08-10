@@ -134,6 +134,7 @@ class ReminderListFragmentTest :
     @Test
     fun errorSnackBarShown() = runBlockingTest {
         fakeDataSource.deleteAllReminders()
+        fakeDataSource.shouldSucceed = false
 
         launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
 
