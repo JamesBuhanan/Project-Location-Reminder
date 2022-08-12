@@ -5,7 +5,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -145,14 +144,25 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     // Checks if users have given their location and sets location enabled if so.
     @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
-        if (isAccessFineLocationPermissionGranted()) {
-            map.isMyLocationEnabled = true
-        } else {
-            ActivityCompat.requestPermissions(
+        when {
+            isAccessFineLocationPermissionGranted() -> {
+                map.isMyLocationEnabled = true
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
                 requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_LOCATION_PERMISSION
-            )
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) -> {
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    REQUEST_LOCATION_PERMISSION
+                )
+            }
+            else -> {
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    REQUEST_LOCATION_PERMISSION
+                )
+            }
         }
     }
 
