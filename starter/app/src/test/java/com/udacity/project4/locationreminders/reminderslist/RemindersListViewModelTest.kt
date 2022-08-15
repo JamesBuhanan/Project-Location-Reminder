@@ -10,6 +10,7 @@ import com.udacity.project4.locationreminders.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.core.IsNot
 import org.junit.After
 import org.junit.Assert.assertThat
@@ -26,6 +27,11 @@ class RemindersListViewModelTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
+
+    @After
+    fun tearDown() {
+        stopKoin()
+    }
 
     private val list = mutableListOf(
         ReminderDTO(
@@ -87,19 +93,6 @@ class RemindersListViewModelTest {
             equalTo(3)
         )
     }
-
-    @Test
-    fun check_loading() = runBlockingTest {
-        //WHEN
-        mainCoroutineRule.pauseDispatcher()
-        reminderListViewModel.loadReminders()
-        //THEN
-        assertThat(
-            reminderListViewModel.showLoading.getOrAwaitValue(),
-            equalTo(true)
-        )
-    }
-
     @Test
     fun shouldReturnError() {
         //GIVEN
@@ -114,9 +107,25 @@ class RemindersListViewModelTest {
             equalTo("It failed!")
         )
     }
+    @Test
+    fun check_loading() = runBlockingTest {
+            //GIVEN
+            mainCoroutineRule.pauseDispatcher()
 
-    @After
-    fun tearDown() {
-        stopKoin()
+            //WHEN
+            reminderListViewModel.loadReminders()
+
+            //THEN
+            assertThat(reminderListViewModel.showLoading.getOrAwaitValue(), `is`(true))
+
+            //WHEN
+            mainCoroutineRule.resumeDispatcher()
+
+            //THEN
+            assertThat(reminderListViewModel.showLoading.getOrAwaitValue(), `is`(false))
+        }
     }
-}
+
+
+
+
