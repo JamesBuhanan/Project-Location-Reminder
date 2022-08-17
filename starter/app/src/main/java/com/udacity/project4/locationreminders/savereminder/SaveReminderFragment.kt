@@ -35,7 +35,6 @@ import org.koin.android.ext.android.inject
 
 
 private const val REQUEST_LOCATION_PERMISSION = 700
-private const val REQUEST_TURN_DEVICE_LOCATION_ON = 701
 
 class SaveReminderFragment : BaseFragment() {
     //Get the view model this time as a single to be shared with the another fragment
@@ -240,7 +239,6 @@ class SaveReminderFragment : BaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        //make sure to clear the view model after destroy, as it's a single view model.
         _viewModel.onClear()
     }
 }

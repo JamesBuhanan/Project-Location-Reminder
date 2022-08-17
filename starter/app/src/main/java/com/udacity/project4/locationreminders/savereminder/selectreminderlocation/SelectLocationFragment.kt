@@ -168,8 +168,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     private fun setMapStyle(map: GoogleMap) {
         try {
-            // Customize the styling of the base map using a JSON object defined
-            // in a raw resource file.
             val success = map.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                     requireContext(),
@@ -185,16 +183,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
-    // Callback for the result from requesting permissions.
-// This method is invoked for every call on requestPermissions(android.app.Activity, String[],
-// int).
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        // Check if location permissions are granted and if so enable the
-        // location data layer.
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.isNotEmpty() && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 enableMyLocation()

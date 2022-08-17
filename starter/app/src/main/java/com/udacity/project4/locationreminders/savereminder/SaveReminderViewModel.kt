@@ -38,21 +38,16 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         _reminderSelectedLocationStr.value = "${latLng.latitude.toInt()}, ${latLng.longitude.toInt()}"
     }
 
-    /**
-     * Clear the live data objects to start fresh next time the view model gets called
-     */
+
     fun onClear() {
         reminderTitle.value = null
         reminderDescription.value = null
         _reminderSelectedLocationStr.value = null
-//        selectedPOI.value = null
         _latitude.value = null
         _longitude.value = null
     }
 
-    /**
-     * Validate the entered data then saves the reminder data to the DataSource
-     */
+
     fun validateAndSaveReminder(reminderData: ReminderDataItem): Boolean {
         val isValid = validateEnteredData(reminderData)
         if (isValid) {
