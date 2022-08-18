@@ -195,7 +195,6 @@ class SaveReminderFragment : BaseFragment() {
     private fun addGeofence(reminderDataItem: ReminderDataItem) {
         val intent = Intent(context, GeofenceBroadcastReceiver::class.java)
         intent.action = ACTION_GEOFENCE_EVENT
-        intent.putExtra(EXTRA_REMINDER_DATA_ITEM, reminderDataItem)
         val geofencePendingIntent = PendingIntent.getBroadcast(
             /* context = */ context,
             /* requestCode = */ 0,
