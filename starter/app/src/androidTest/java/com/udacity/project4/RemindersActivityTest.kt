@@ -21,6 +21,7 @@ import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorActivity
 import com.udacity.project4.utils.ToastShower
+import com.udacity.project4.utils.ToastShowerImpl
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
@@ -45,17 +46,6 @@ class RemindersActivityTest : AutoCloseKoinTest() {
     private val dataBindingIdlingResource = DataBindingIdlingResource()
     private lateinit var toastShower: ToastShower
 
-    class FakeToastShower() : ToastShower {
-        private val shownToasts = mutableListOf<String>()
-        override fun showToast(message: String) {
-            shownToasts.add(message)
-        }
-
-        fun hasShown(message: String): Boolean {
-            return shownToasts.contains(message)
-        }
-    }
-
     @Before
     fun init() {
         stopKoin()
@@ -67,7 +57,7 @@ class RemindersActivityTest : AutoCloseKoinTest() {
                     get() as ReminderDataSource
                 )
             }
-            single { FakeToastShower() as ToastShower }
+            single { ToastShowerImpl(appContext) as ToastShower }
             single {
                 SaveReminderViewModel(
                     appContext,

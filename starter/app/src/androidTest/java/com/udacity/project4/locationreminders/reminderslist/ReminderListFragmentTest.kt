@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.fragment.app.testing.withFragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
@@ -122,8 +123,8 @@ class ReminderListFragmentTest :
         // WHEN - Details fragment launched to display task
         val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
         val navController = mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
+        scenario.withFragment {
+            Navigation.setViewNavController(view!!, navController)
         }
 
         onView(withId(R.id.addReminderFAB)).perform(click())
